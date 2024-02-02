@@ -53,7 +53,11 @@ class Menus : ComponentActivity() {
             jsonObject,
             {
                 Log.d("CategoryActivity","les données en brut:$it")
-                val result= Gson.Json(it.toString(),DataResult::class.java)},{
+                val gson=Gson()
+                val result= gson.fromJson(it.toString(),DataResult::class.java)
+
+            },
+            {
                 Log.d("CategoryActivity","erreur")
             }
           )
