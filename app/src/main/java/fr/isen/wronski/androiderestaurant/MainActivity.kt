@@ -1,5 +1,5 @@
 package fr.isen.wronski.androiderestaurant
-
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -18,14 +18,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import fr.isen.wronski.androiderestaurant.ui.theme.AndroidERestaurantTheme
+import kotlin.reflect.KFunction1
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,44 +36,52 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Column {
-
-                        TopBarDeFullBg() //mettre dans un scafold
-
-                        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
-                            IciCaCuisine()
-                        }//possibilité de rajouter un margin pour enlever le Spacer
-
-                        Spacer(Modifier.padding(0.dp, 20.dp))
-
-                        Column(
-                            Modifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            ListeBouton()
-                        }
-                    }
+                    FirstPage(::onMenuClick)
                 }
             }
         }
+    }
+
+
+    fun onMenuClick(sw: Int){
+        when(sw){
+    1->onEntreeClick()
+    2->onPlatClick()
+    3->onDessertClick()
+        }
+    }
+
+    fun onEntreeClick(){
+        val text = "Entrée!"
+        val duration = Toast.LENGTH_SHORT
+        Toast.makeText(this, text,duration).show()
+        val intent= Intent(this@MainActivity,Menus::class.java)
+        intent.putExtra("menuType",1)
+        startActivity(intent)
+    }
+    fun onPlatClick(){
+        val text = "Plat!"
+        val duration = Toast.LENGTH_SHORT
+        Toast.makeText(this, text,duration).show()
+       val intent= Intent(this@MainActivity,Menus::class.java)
+        intent.putExtra("menuType",2)
+        startActivity(intent)
+    }
+    fun onDessertClick(){
+        val text = "Dessert!"
+        val duration = Toast.LENGTH_SHORT
+        Toast.makeText(this, text,duration).show()
+        val intent= Intent(this@MainActivity,Menus::class.java)
+        intent.putExtra("menuType",3)
+        startActivity(intent)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarDeFullBg() {
-
     TopAppBar(
         title = { Text(text = "Toothless restaurant") }
-    )
-
-}
-
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
     )
 }
 
@@ -94,17 +101,12 @@ fun IciCaCuisine() {
         )
     }
 }
-
-
 @Composable
-fun ListeBouton() {
-    val localContext= LocalContext.current
+fun ListeBouton(onMenuClick: KFunction1<Int, Unit>) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Button(
             onClick = {
-                val text = "Entrée!"
-                val duration = Toast.LENGTH_SHORT
-                Toast.makeText(localContext,text,duration).show()
+                onMenuClick(1)
             },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -114,7 +116,7 @@ fun ListeBouton() {
 
         Button(
             onClick = {
-                // Handle button click for
+                onMenuClick(2)
             },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -124,7 +126,7 @@ fun ListeBouton() {
 
         Button(
             onClick = {
-                // Handle button click for
+                onMenuClick(3)
             },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -133,8 +135,26 @@ fun ListeBouton() {
         }
     }
 }
-
 @Composable
-fun Toastinette() {
-    TODO("Not yet implemented")
+fun FirstPage(onMenuClick: KFunction1<Int, Unit>) {
+
+    Column {
+
+        TopBarDeFullBg() //mettre dans un scafold
+
+        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
+            IciCaCuisine()
+        }//possibilité de rajouter un margin pour enlever le Spacer
+
+        Spacer(Modifier.padding(0.dp, 20.dp))
+
+        Column(
+            Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+
+        ) {
+            ListeBouton(onMenuClick)
+        }
+    }
+
 }
